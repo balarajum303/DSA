@@ -688,4 +688,264 @@
 // console.log(isomorphic("add", "egg"));
 // console.log(isomorphic("abc", "dee"));
 
-///////////////////////////////////////////////20. ////////////////////////////////////////////
+///////////////////////////////////////////////20.Encode and Decode ////////////////////////////////////////////
+
+// Encoding: Add the length of each word followed by a special character (e.g., '#') and the word
+// function encode(strs) {
+//   return strs.map(s => s.length + "#" + s).join('');
+// }
+
+// // Decoding: Read length, skip '#', then extract that many characters
+// function decode(s) {
+//   const res = [];
+//   let i = 0;
+
+//   while (i < s.length) {
+//     let j = i;
+//     while (s[j] !== "#") j++;
+//     const length = parseInt(s.slice(i, j));
+//     const word = s.slice(j + 1, j + 1 + length);
+//     res.push(word);
+//     i = j + 1 + length;
+//   }
+
+//   return res;
+// }
+
+// // Example
+// const original = ["leet", "code", "123"];
+// const encoded = encode(original);
+// console.log("Encoded:", encoded);  // Output: "4#leet4#code3#123"
+
+// const decoded = decode(encoded);
+// console.log("Decoded:", decoded);  // Output: ["leet", "code", "123"]
+
+////////////////////////////////////////// 21.check number or not ////////////////////////////////////////////////////////////
+// function isNumber(num) {
+//     return num.trim() !== "" && !isNaN(num)
+// }
+// console.log(isNumber("123"));        // true
+// console.log(isNumber("  -45.67 "));  // true
+// console.log(isNumber("1e10"));       // true
+// console.log(isNumber("e9"));         // false
+// console.log(isNumber("abc"));        // false
+// console.log(isNumber("   "));        // false
+///////////////////////////////////////////////////  22.       /////////////////////////////////
+// function unlknown(s) {
+//     if (!s) return s;
+//     let count = 1, res = "";
+//     for (let i = 1; i <= s.length; i++) {
+//         if (s[i] === s[i - 1]) {
+//             count++
+//         }
+//         else {
+//             res += s[i - 1] + (count > 1 ? count : "");
+//         }
+
+//     }
+//     return res;
+// }
+// console.log(unlknown("aabccccddeff")) ///a2b2c5d6e6f7
+////////////////////////////////////////////  23.Remove Invalid Parentheses/////////////////////////////////
+// function removeInvalidParentheses(s) {
+//   // Helper function to check if a string has valid parentheses
+//   const isValid = (str) => {
+//     let count = 0;
+//     for (let char of str) {
+//       if (char === "(") count++; // Increase count for open parens
+//       if (char === ")") {
+//         if (count === 0) return false; // Too many closing parens
+//         count--; // Match one open paren
+//       }
+//     }
+//     return count === 0; // True if all open parens are matched
+//   };
+
+//   let res = []; // Stores valid result strings
+//   let found = false; // Flag to stop after finding minimum deletions
+//   let queue = [s]; // Start BFS with the input string
+
+//   while (queue.length) {
+//     const str = queue.shift(); // Take the next string from the queue
+
+//     if (isValid(str)) {
+//       // Check if it's valid
+//       res.push(str); // Add to results
+//       found = true; // We've found at least one valid string
+//     }
+
+//     if (found) continue; // Skip generating more strings at deeper levels
+
+//     // Generate all possible strings by removing one parenthesis at each position
+//     for (let i = 0; i < str.length; i++) {
+//       if (str[i] !== "(" && str[i] !== ")") continue; // Skip non-parenthesis characters
+
+//       // Create new string by removing the i-th character
+//       let data = str.slice(0, i) + str.slice(i + 1);
+
+//       // Add new string to the queue (no visited set, so duplicates may occur)
+//       queue.push(data);
+//     }
+//   }
+
+//   // Return unique valid results (remove duplicates using Set)
+//   return Array.from(new Set(res));
+// }
+
+// // Example usage
+// console.log(removeInvalidParentheses("()())()"));
+// // Expected output: [ '(())()', '()()()' ]
+// /////-----------------------------------------------------------------------------------------------/////
+// function removeInvalidParentheses(s) {
+//   const isValid = (str) => {
+//     let count = 0;
+//     for (let char of str) {
+//       if (char === "(") count++;
+//       if (char === ")") {
+//         if (count === 0) return false;
+//         count--;
+//       }
+//     }
+//     return count === 0;
+//   };
+
+//   const result = [];
+//   const visited = new Set();
+//   const queue = [s];
+//   let found = false;
+
+//   while (queue.length) {
+//     const str = queue.shift();
+//     if (isValid(str)) {
+//       result.push(str);
+//       found = true;
+//     }
+
+//     if (found) continue;
+
+//     for (let i = 0; i < str.length; i++) {
+//       if (str[i] !== "(" && str[i] !== ")") continue;
+
+//       const next = str.slice(0, i) + str.slice(i + 1);
+//       if (!visited.has(next)) {
+//         visited.add(next);
+//         queue.push(next);
+//       }
+//     }
+//   }
+
+//   return result;
+// }
+// console.log(removeInvalidParentheses("()())()"));
+/*
+  Output: ["()()()", "(())()"]
+  Explanation: Both are valid expressions formed by removing one parenthesis.
+  */
+//////////////////////////////////////// 24. Minimum Window Substring/////////////////////////////////
+// function minWindow(s, t) {
+//   if (s.length === 0 || t.length === 0) return "";
+//   let need = {};
+//   for (let i = 0; i < t.length; i++) {
+//     let char = t[i];
+//     need[char] = (need[char] || 0) + 1;
+//   }
+
+//   let left = 0;
+//   let minStart = 0;
+//   let minLength = Infinity;
+//   let count = 0;
+//   let window = {};
+//   for (let right = 0; right < s.length; right++) {
+//     let rightChar = s[right];
+//     window[rightChar] = (window[rightChar] || 0) + 1;
+
+//     if (need[rightChar] && window[rightChar] <= need[rightChar]) {
+//       count++;
+//     }
+//     // When all characters from t are matched
+//     while (count === t.length) {
+//       if (right - left + 1 < minLength) {
+//         minLength = right - left + 1;
+//         minStart = left;
+//       }
+
+//       let leftChar = s[left];
+//       window[leftChar]--;
+
+//       // If it's a needed char and dropping it means we're short
+//       if (need[leftChar] && window[leftChar] < need[leftChar]) {
+//         count--;
+//       }
+
+//       left++;
+//     }
+//   }
+//   return minLength === Infinity ? "" : s.slice(minStart, minStart + minLength);
+// }
+// console.log(minWindow("aabdec", "abc")); //abdec
+
+//////////////////////////////////////////// 25.finad all Anagrams of a sub string  //////////////////////
+// function subAnagram(s, p) {
+//   let sortedP = p.split("").sort().join("");
+//   let pLen = p.length;
+//   let res = [];
+//   for (let i = 0; i <= s.length; i++) {
+//     let data = s.slice(i, i + pLen);
+//     if (data.split("").sort().join("") === sortedP) {
+//        res.push(data);
+//       // res.push(i)  //[ 0, 6 ]
+//     }
+//   }
+//   return res;
+// }
+// console.log(subAnagram("cbaebabacd", "abc")); //[ 'cba', 'bac' ]
+
+///------------------------------------------------------------------------------
+// function findAnagrams(s, p) {
+//   const result = [];
+//   const sortedP = p.split("").sort().join("");
+//   const pLen = p.length;
+
+//   for (let i = 0; i <= s.length - pLen; i++) {
+//     const sub = s.substring(i, i + pLen);
+//     if (sub.split("").sort().join("") === sortedP) {
+//       result.push(i);
+//     }
+//   }
+
+//   return result;
+// }
+
+// console.log(findAnagrams("cbaebabacd", "abc")); // Output: [0, 6]
+
+// //////////////////////  26. Palindrome with deletion/////////////////////////////////////////////////////////
+// function validPalindrome(s) {
+//   const isPal = (str) => str === str.split("").reverse().join("");
+
+//   for (let i = 0, j = s.length - 1; i < j; i++, j--) {
+//     if (s[i] !== s[j]) {
+//       // Try removing one character from either side
+//       const skipLeft = s.slice(i, j);
+//       const skipRight = s.slice(i + 1, j + 1);
+//       return isPal(skipLeft) || isPal(skipRight);
+//     }
+//   }
+
+//   return true; // Already a palindrome
+// }
+
+// console.log(validPalindrome("abca")); // true (remove 'c')
+// console.log(validPalindrome("abc")); // false
+// ///////////////////////////////////////////////  27.    /////////////////////////////////////////////////
+// function strStr(haystack, needle) {
+//   if (needle === "") return 0;
+//   for (let i = 0; i <= haystack.length - needle.length; i++) {
+//     if (haystack.slice(i, i + needle.length) === needle) {
+//       return i;
+//     }
+//   }
+//   return -1;
+// }
+// // Example
+// console.log(strStr("hello", "ll")); // Output: 2
+// console.log(strStr("abc", "d")); // Output: -1
